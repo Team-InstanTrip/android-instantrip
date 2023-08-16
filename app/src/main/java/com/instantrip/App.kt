@@ -9,6 +9,6 @@ class App: Application() {
         super.onCreate()
         Timber.plant(Timber.DebugTree())
         // Kakao SDK 초기화
-        KakaoSdk.init(this, "{NATIVE_APP_KEY}")
+        KakaoSdk.init(this, "35e79faafc6f538f208f8c4e964638ff")
     }
 }
