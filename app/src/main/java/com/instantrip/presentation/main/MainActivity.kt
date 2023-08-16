@@ -1,4 +1,4 @@
-package com.instantrip
+package com.instantrip.presentation.main
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
+import com.instantrip.R
 import com.instantrip.databinding.ActivityMainBinding
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
