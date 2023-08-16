@@ -7,7 +7,9 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.instantrip.R
 import com.instantrip.databinding.ActivityIntroBinding
+import com.instantrip.util.Utils
 import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import timber.log.Timber
 
@@ -19,8 +21,12 @@ class IntroActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_intro)
 
-        binding.btnLoginKakao.setOnClickListener {
+        Utils.getKeyHash(this)
+
         initViewModels()
+
+        binding.btnLoginKakao.setOnClickListener {
+            viewModel.loginKakao()
         }
     }
 
