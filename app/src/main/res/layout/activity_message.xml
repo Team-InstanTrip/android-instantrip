@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/message_main"
+    android:gravity="bottom"
+    app:umanoDragView="@id/comment_layout"
+    app:umanoOverlay="true"
+    app:umanoPanelHeight="50dp">
+
+    <!-- background layout -->
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/message_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        app:layoutDescription="@xml/message_layout_scene"
+        android:layout_gravity="center_vertical">
+
+        <Button
+            android:id="@+id/tour_spot_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
+            android:text="관광지명"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            app:layout_constraintBottom_toTopOf="@+id/message_list_viewpager"/>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/message_list_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:foregroundGravity="center"
+            android:overScrollMode="never"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent" >
+
+        </androidx.viewpager.widget.ViewPager>
+
+        <TextView
+            android:id="@+id/message_list_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0/0"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/message_list_viewpager"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+    <!-- slidingup layout -->
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/comment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        app:layoutDescription="@xml/comment_layout_scene"
+        android:layout_gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/comment_head"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="댓글 보기"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/comment_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:textColor="#000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/comment_head"
+            app:layout_constraintBottom_toTopOf="@id/comment_button"/>
+
+        <Button
+            android:id="@+id/comment_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="댓글남기기"
+            android:background="#FFFFFF"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.motion.widget.MotionLayout>
+
+</com.sothree.slidinguppanel.SlidingUpPanelLayout>

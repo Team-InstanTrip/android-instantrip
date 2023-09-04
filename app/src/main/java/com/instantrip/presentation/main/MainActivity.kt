@@ -1,5 +1,6 @@
 package com.instantrip.presentation.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.instantrip.R
 import com.instantrip.databinding.ActivityMainBinding
+import com.instantrip.presentation.message.MessageActivity
 import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
 
@@ -30,6 +32,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
 
         initNavigationMenu()
         binding.btnMenu.setOnClickListener(this)
+
+        //마커버튼 클릭이벤트 추가
+        binding.tmpMarkerButton.setOnClickListener(this)
 
     }
 
@@ -63,6 +68,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         when (v?.id) {
             R.id.btn_menu -> {
                 binding.mainDrawerLayout.openDrawer(GravityCompat.START)
+            }
+
+            //마커클릭 -> 메세지화면으로 이동
+            R.id.tmp_marker_button -> {
+                startActivity(Intent(this, MessageActivity::class.java))
             }
         }
     }
