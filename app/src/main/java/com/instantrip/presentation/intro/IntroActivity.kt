@@ -1,5 +1,6 @@
 package com.instantrip.presentation.intro
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -34,6 +35,18 @@ class IntroActivity : AppCompatActivity() {
         viewModel.kakaoLoginCallback.observe(this) {
             kakaoLogin(it)
         }
+        viewModel.loginStatus.observe(this) {
+            when (it) {
+                LoginStatus.JOINED -> {
+                    //TODO : 이미 가입한사람은 메인화면으로
+                }
+                LoginStatus.NEWBIE -> {
+                    val intent = Intent(this, NickNameActivity::class.java)
+                    intent.putExtra("userInfo", viewModel.userInfo.value)
+                    startActivity(intent)
+                }
+            }
+        }
     }
 
     private fun kakaoLogin(callback: (OAuthToken?, Throwable?) -> Unit) {
@@ -42,6 +55,5 @@ class IntroActivity : AppCompatActivity() {
         } else {
             UserApiClient.instance.loginWithKakaoAccount(this, callback = callback)
         }
-
     }
 }

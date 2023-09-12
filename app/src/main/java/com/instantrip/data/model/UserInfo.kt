@@ -2,6 +2,7 @@ package com.instantrip.data.model
 
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 data class UserInfo(
     @SerializedName("activeStatus")
@@ -18,4 +19,4 @@ data class UserInfo(
     val userId: Int?,
     @SerializedName("userName")
     val userName: String?
-)
+): Serializable
