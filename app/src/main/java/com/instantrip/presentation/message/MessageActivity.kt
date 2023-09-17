@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.slidingpanelayout.widget.SlidingPaneLayout
+//import androidx.slidingpanelayout.widget.SlidingPaneLayout
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.instantrip.R
