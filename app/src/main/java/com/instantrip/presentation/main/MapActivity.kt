@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.instantrip.R
@@ -33,6 +34,7 @@ import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapLifeCycleCallback
 import com.kakao.vectormap.camera.CameraPosition
+import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.Label
 import com.kakao.vectormap.label.LabelOptions
 import timber.log.Timber
@@ -49,6 +51,7 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
 
     private lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
     private lateinit var getRuntimePermissionLauncher: ActivityResultLauncher<Intent>
+    private var isFirst: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -206,42 +209,50 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
 
     private fun initializeMap(latLng: LatLng) {
         Timber.tag("location_test").d("initializeMap = ${latLng.latitude}, ${latLng.longitude}")
-        binding.mapView.start(object : MapLifeCycleCallback() {
-            override fun onMapDestroy() {
-                // 지도 API 가 정상적으로 종료될 때 호출됨
-                Timber.d("맵 정상종료")
-            }
 
-            override fun onMapError(error: Exception) {
-                // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
-                Timber.e("인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨")
-                Timber.e(error.message)
-            }
+        if (isFirst) {
+            isFirst = false
+            binding.mapView.start(object : MapLifeCycleCallback() {
+                override fun onMapDestroy() {
+                    // 지도 API 가 정상적으로 종료될 때 호출됨
+                    Timber.d("맵 정상종료")
+                }
 
-        }, object : KakaoMapReadyCallback() {
-            override fun onMapReady(map: KakaoMap) {
-                // 인증 후 API 가 정상적으로 실행될 때 호출됨
-                Timber.d("인증 후 API 가 정상적으로 실행될 때 호출됨")
-                kakaoMap = map
-                kakaoMap.setOnCameraMoveStartListener(this@MapActivity)
-                kakaoMap.setOnCameraMoveEndListener(this@MapActivity)
-                centerPointLabel = kakaoMap.labelManager!!.layer!!
-                    .addLabel(
-                        LabelOptions.from(kakaoMap.cameraPosition!!.position)
-                            .setStyles(R.drawable.red_dot_marker)
-                    )
-            }
+                override fun onMapError(error: Exception) {
+                    // 인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨
+                    Timber.e("인증 실패 및 지도 사용 중 에러가 발생할 때 호출됨")
+                    Timber.e(error.message)
+                }
 
-            override fun getPosition(): LatLng {
-                val lat = latLng.latitude
-                val lng = latLng.longitude
-                return LatLng.from(lat, lng);
-            }
+            }, object : KakaoMapReadyCallback() {
+                override fun onMapReady(map: KakaoMap) {
+                    // 인증 후 API 가 정상적으로 실행될 때 호출됨
+                    Timber.d("인증 후 API 가 정상적으로 실행될 때 호출됨")
+                    kakaoMap = map
+                    kakaoMap.setOnCameraMoveStartListener(this@MapActivity)
+                    kakaoMap.setOnCameraMoveEndListener(this@MapActivity)
+                    centerPointLabel = kakaoMap.labelManager!!.layer!!
+                        .addLabel(
+                            LabelOptions.from(kakaoMap.cameraPosition!!.position)
+                                .setStyles(R.drawable.red_dot_marker)
+                        )
+                }
 
-            override fun getZoomLevel(): Int {
-                return 15
-            }
-        })
+                override fun getPosition(): LatLng {
+                    val lat = latLng.latitude
+                    val lng = latLng.longitude
+                    return LatLng.from(lat, lng);
+                }
+
+                override fun getZoomLevel(): Int {
+                    return 15
+                }
+            })
+        } else {
+            Timber.tag("location_test").d("else로 빠져서 카메라 업데이트")
+            val cameraUpdate = CameraUpdateFactory.newCenterPosition(latLng)
+            kakaoMap.moveCamera(cameraUpdate)
+        }
     }
 
     override fun onCameraMoveEnd(
