@@ -10,20 +10,25 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat.getCurrentLocation
+import androidx.core.view.GravityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.navigation.NavigationView
 import com.instantrip.R
 import com.instantrip.databinding.ActivityMapBinding
+import com.instantrip.databinding.LayoutMapMainBinding
 import com.instantrip.util.Constants.REQ_LOCATION_PERMISSION
 import com.instantrip.util.PreferenceUtil
 import com.kakao.vectormap.GestureType
@@ -40,12 +45,14 @@ import com.kakao.vectormap.label.LabelOptions
 import timber.log.Timber
 
 class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveStartListener,
-    View.OnClickListener {
+    View.OnClickListener, NavigationView.OnNavigationItemSelectedListener {
 
     private lateinit var binding: ActivityMapBinding
+    private lateinit var mapBinding: LayoutMapMainBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var kakaoMap: KakaoMap
     private lateinit var centerPointLabel: Label
+    private val viewModel: MainViewModel by viewModels()
     private val permissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
     private val DEFAULT_LATLNG: LatLng = LatLng.from(37.406960, 127.115587)
 
@@ -56,11 +63,11 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMapBinding.inflate(layoutInflater)
+        mapBinding = LayoutMapMainBinding.bind(binding.mapMain.root)
         setContentView(binding.root)
 
         init()
         checkAllPermissions()
-        this.onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     override fun onResume() {
@@ -101,11 +108,21 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
     }
 
     private fun init() {
-        binding.btnLocation.setOnClickListener(this)
-        binding.btnMenu.setOnClickListener(this)
-        binding.btnSearch.setOnClickListener(this)
-        binding.btnLayer.setOnClickListener(this)
-        binding.btnFavorite.setOnClickListener(this)
+        initNavigationMenu()
+        setViewModels()
+        // 메인 버튼
+        mapBinding.btnLocation.setOnClickListener(this)
+        mapBinding.btnMenu.setOnClickListener(this)
+        mapBinding.btnSearch.setOnClickListener(this)
+        mapBinding.btnLayer.setOnClickListener(this)
+        mapBinding.btnFavorite.setOnClickListener(this)
+        // 메인 플로팅버튼
+        mapBinding.fabMain.setOnClickListener(this)
+        mapBinding.fabAddPicture.setOnClickListener(this)
+        mapBinding.fabAddVideo.setOnClickListener(this)
+        mapBinding.fabAddMessage.setOnClickListener(this)
+
+        // 권한 요청 런처
         getRuntimePermissionLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -132,6 +149,7 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
                 }
             }
         }
+        this.onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     private fun checkRuntimePermissions() {
@@ -212,7 +230,7 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
 
         if (isFirst) {
             isFirst = false
-            binding.mapView.start(object : MapLifeCycleCallback() {
+            mapBinding.mapView.start(object : MapLifeCycleCallback() {
                 override fun onMapDestroy() {
                     // 지도 API 가 정상적으로 종료될 때 호출됨
                     Timber.d("맵 정상종료")
@@ -287,22 +305,66 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
 
     override fun onClick(view: View) {
         when (view) {
-            binding.btnLocation -> {
+            mapBinding.btnLocation -> {
                 getCurrentLocation()
             }
-            binding.btnMenu -> {
-                // 전체메뉴
+            mapBinding.btnMenu -> {
+                // Drawer
+                binding.drawerLayout.openDrawer(GravityCompat.START)
             }
-            binding.btnSearch -> {
+            mapBinding.btnSearch -> {
                 // 검색
+                Toast.makeText(this@MapActivity, "검색?", Toast.LENGTH_LONG).show()
             }
-            binding.btnLayer -> {
+            mapBinding.btnLayer -> {
                 // 레이어
+                Toast.makeText(this@MapActivity, "레이어?", Toast.LENGTH_LONG).show()
             }
-            binding.btnFavorite -> {
+            mapBinding.btnFavorite -> {
                 // 즐겨찾기?
+                Toast.makeText(this@MapActivity, "즐찾?", Toast.LENGTH_LONG).show()
+            }
+            mapBinding.fabMain -> {
+                // 플로팅버튼
+                viewModel.toggleVisibility()
+            }
+            mapBinding.fabAddPicture -> {
+
+                Toast.makeText(this@MapActivity, "사진추가", Toast.LENGTH_LONG).show()
+            }
+            mapBinding.fabAddVideo -> {
+
+                Toast.makeText(this@MapActivity, "비디오추가", Toast.LENGTH_LONG).show()
+            }
+            mapBinding.fabAddMessage -> {
+
+                Toast.makeText(this@MapActivity, "텍스트추가", Toast.LENGTH_LONG).show()
             }
         }
+    }
+
+    private fun setViewModels() {
+        viewModel.isVisible.observe(this) {
+            if (it) {
+                mapBinding.fabAddPicture.visibility = View.VISIBLE
+                mapBinding.fabAddVideo.visibility = View.VISIBLE
+                mapBinding.fabAddMessage.visibility = View.VISIBLE
+            } else {
+                mapBinding.fabAddPicture.visibility = View.GONE
+                mapBinding.fabAddVideo.visibility = View.GONE
+                mapBinding.fabAddMessage.visibility = View.GONE
+            }
+        }
+
+    }
+
+    private fun initNavigationMenu() {
+        val drawerLayout = binding.drawerLayout
+        val navView = binding.navigationDrawer
+
+        navView.setNavigationItemSelectedListener(this)
+
+        val headerView = navView.getHeaderView(0)
     }
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
@@ -318,5 +380,20 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
             }
             builder.show()
         }
+    }
+
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item1_my -> {
+                Toast.makeText(this, "메뉴1", Toast.LENGTH_LONG).show()
+            }
+            R.id.menu_item2_like -> {
+                Toast.makeText(this, "메뉴2", Toast.LENGTH_LONG).show()
+            }
+            R.id.menu_item3_setting -> {
+                Toast.makeText(this, "메뉴3", Toast.LENGTH_LONG).show()
+            }
+        }
+        return false
     }
 }
