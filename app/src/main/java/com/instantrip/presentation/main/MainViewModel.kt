@@ -10,7 +10,16 @@ class MainViewModel: ViewModel() {
     }
     val isVisible: LiveData<Boolean> = _isVisible
 
+    private val _isUserLogined = MutableLiveData<Boolean>()
+    val isUserLogined: LiveData<Boolean> = _isUserLogined
+
     fun toggleVisibility() {
         _isVisible.value = _isVisible.value != true
     }
+
+    fun setIsUserLogined(isLogined: Boolean) {
+        _isUserLogined.value = isLogined
+    }
+
+
 }

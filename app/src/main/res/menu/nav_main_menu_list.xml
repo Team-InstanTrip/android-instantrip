@@ -4,13 +4,19 @@
     tools:showIn="navigation_view">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/menu_item0_login"
+            android:title="로그인하기"/>
+        <item
             android:id="@+id/menu_item1_my"
+            android:visible="false"
             android:title="내 게시물 보기"/>
         <item
             android:id="@+id/menu_item2_like"
+            android:visible="false"
             android:title="좋아요"/>
         <item
             android:id="@+id/menu_item3_setting"
+            android:visible="false"
             android:title="설정"/>
     </group>
 </menu>

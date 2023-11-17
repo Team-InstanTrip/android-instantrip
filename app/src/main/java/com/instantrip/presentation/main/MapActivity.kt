@@ -21,14 +21,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.location.LocationManagerCompat.getCurrentLocation
 import androidx.core.view.GravityCompat
+import androidx.core.view.get
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.navigation.NavigationView
 import com.instantrip.R
 import com.instantrip.databinding.ActivityMapBinding
 import com.instantrip.databinding.LayoutMapMainBinding
+import com.instantrip.presentation.login.LoginActivity
 import com.instantrip.util.Constants.REQ_LOCATION_PERMISSION
 import com.instantrip.util.PreferenceUtil
 import com.kakao.vectormap.GestureType
@@ -58,6 +59,7 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
 
     private lateinit var getGPSPermissionLauncher: ActivityResultLauncher<Intent>
     private lateinit var getRuntimePermissionLauncher: ActivityResultLauncher<Intent>
+    private lateinit var getLoginAction: ActivityResultLauncher<Intent>
     private var isFirst: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,6 +70,11 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
 
         init()
         checkAllPermissions()
+
+        if (intent.hasExtra("isUserLogined")) {
+            Timber.d("NicknameActivity 타고 들어올때")
+            viewModel.setIsUserLogined(intent.getBooleanExtra("isUserLogined", false))
+        }
     }
 
     override fun onResume() {
@@ -108,6 +115,9 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
     }
 
     private fun init() {
+        // 로그인 체크
+        PreferenceUtil.getBoolean("isLogined", false)?.let { viewModel.setIsUserLogined(it) }
+
         initNavigationMenu()
         setViewModels()
         // 메인 버튼
@@ -149,6 +159,19 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
                 }
             }
         }
+
+        getLoginAction = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            Timber.d("ActivityResultContracts resultcode = ${result.resultCode}")
+            if (result.resultCode == Activity.RESULT_OK) {
+                viewModel.setIsUserLogined(true)
+            } else {
+                Toast.makeText(this, "로그인실패", Toast.LENGTH_LONG).show()
+                finish()
+            }
+        }
+
         this.onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
@@ -329,8 +352,6 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
                 viewModel.toggleVisibility()
             }
             mapBinding.fabAddPicture -> {
-
-                Toast.makeText(this@MapActivity, "사진추가", Toast.LENGTH_LONG).show()
             }
             mapBinding.fabAddVideo -> {
 
@@ -353,6 +374,22 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
                 mapBinding.fabAddPicture.visibility = View.GONE
                 mapBinding.fabAddVideo.visibility = View.GONE
                 mapBinding.fabAddMessage.visibility = View.GONE
+            }
+        }
+
+        val menu = binding.navigationDrawer.menu
+        viewModel.isUserLogined.observe(this) {
+            PreferenceUtil.setBoolean("isLogined", it)
+            if (it) { // 로그인 상태
+                menu[0].isVisible = false
+                menu[1].isVisible = true
+                menu[2].isVisible = true
+                menu[3].isVisible = true
+            } else { // 비로그인 상태
+                menu[0].isVisible = true
+                menu[1].isVisible = false
+                menu[2].isVisible = false
+                menu[3].isVisible = false
             }
         }
 
@@ -384,6 +421,9 @@ class MapActivity: AppCompatActivity(), OnCameraMoveEndListener, OnCameraMoveSta
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menu_item0_login -> {
+                getLoginAction.launch(Intent(this, LoginActivity::class.java))
+            }
             R.id.menu_item1_my -> {
                 Toast.makeText(this, "메뉴1", Toast.LENGTH_LONG).show()
             }
