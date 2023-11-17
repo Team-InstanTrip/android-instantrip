@@ -1,10 +1,8 @@
-package com.instantrip.presentation.intro
+package com.instantrip.presentation.login
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.instantrip.data.model.LoginRequest
 import com.instantrip.data.model.SignUpUserInfo
 import com.instantrip.data.repository.UserRepositoryImpl
 import com.instantrip.domain.repository.UserRepository

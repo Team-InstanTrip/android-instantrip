@@ -56,10 +56,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         navView.setNavigationItemSelectedListener(this)
 
         val headerView = navView.getHeaderView(0)
-        val closeBtn = headerView.findViewById<Button>(R.id.btn_close)
-        closeBtn.setOnClickListener {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
     }
 
     override fun onClick(v: View?) {

@@ -1,4 +1,4 @@
-package com.instantrip.presentation.intro
+package com.instantrip.presentation.login
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,10 +10,10 @@ import com.instantrip.data.model.SignUpUserInfo
 import com.instantrip.data.model.UserInfo
 import com.instantrip.databinding.ActivityNicknameBinding
 import com.instantrip.presentation.main.MainActivity
+import com.instantrip.presentation.main.MapActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -38,8 +38,9 @@ class NickNameActivity : AppCompatActivity() {
 
         binding.btnNext.setOnClickListener {
             val userInfo = intent.getSerializableExtra("userInfo") as UserInfo
+            Timber.d("userInfo=${userInfo}")
             val nickName = binding.etNickname.text.toString()
-            val newSignUpUserInfo = SignUpUserInfo(userInfo.email!!, userInfo.kakaoUserNumber, "", nickName)
+            val newSignUpUserInfo = SignUpUserInfo(userInfo.email, userInfo.kakaoUserNumber, "", nickName)
             CoroutineScope(Dispatchers.IO).launch {
                 val result = async {
                     viewModel.sendNickName(newSignUpUserInfo)
@@ -48,7 +49,8 @@ class NickNameActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     if (result) {
                         Timber.d("회원가입 성공!")
-                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        val intent = Intent(applicationContext, MapActivity::class.java)
+                        intent.putExtra("isUserLogined", true)
                         startActivity(intent)
                     } else {
                         Timber.d("회원가입 실패!")
