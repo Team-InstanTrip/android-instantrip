@@ -1,20 +1,17 @@
-package com.instantrip.presentation.intro
+package com.instantrip.presentation.login
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.instantrip.R
 import com.instantrip.databinding.ActivityIntroBinding
 import com.instantrip.util.Utils
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
-import timber.log.Timber
 
-class IntroActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityIntroBinding
     private val viewModel: IntroViewModel by viewModels()
 
@@ -38,7 +35,8 @@ class IntroActivity : AppCompatActivity() {
         viewModel.loginStatus.observe(this) {
             when (it) {
                 LoginStatus.JOINED -> {
-                    //TODO : 이미 가입한사람은 메인화면으로
+                    setResult(RESULT_OK)
+                    finish()
                 }
                 LoginStatus.NEWBIE -> {
                     val intent = Intent(this, NickNameActivity::class.java)

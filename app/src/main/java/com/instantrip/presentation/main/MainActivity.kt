@@ -1,5 +1,6 @@
 package com.instantrip.presentation.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
@@ -10,13 +11,12 @@ import androidx.core.view.GravityCompat
 import com.google.android.material.navigation.NavigationView
 import com.instantrip.R
 import com.instantrip.databinding.ActivityMainBinding
-import net.daum.mf.map.api.MapPoint
-import net.daum.mf.map.api.MapView
+import com.instantrip.presentation.message.MessageActivity
 
 
 class MainActivity : AppCompatActivity(), View.OnClickListener,
     NavigationView.OnNavigationItemSelectedListener {
-    private var mapView : MapView? = null
+//    private var mapView : MapView? = null
     private lateinit var binding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,12 +24,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mapView = MapView(this)
-        binding.map.addView(mapView)
-        mapView!!.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
-
-        initNavigationMenu()
-        binding.btnMenu.setOnClickListener(this)
+//        mapView = MapView(this)
+//        binding.map.addView(mapView)
+//        mapView!!.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(37.53737528, 127.00557633), true);
+//
+//        initNavigationMenu()
+//        binding.btnMenu.setOnClickListener(this)
+//
+//        //마커버튼 클릭이벤트 추가
+//        binding.tmpMarkerButton.setOnClickListener(this)
 
     }
 
@@ -53,16 +56,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener,
         navView.setNavigationItemSelectedListener(this)
 
         val headerView = navView.getHeaderView(0)
-        val closeBtn = headerView.findViewById<Button>(R.id.btn_close)
-        closeBtn.setOnClickListener {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        }
     }
 
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.btn_menu -> {
                 binding.mainDrawerLayout.openDrawer(GravityCompat.START)
+            }
+
+            //마커클릭 -> 메세지화면으로 이동
+            R.id.tmp_marker_button -> {
+                startActivity(Intent(this, MessageActivity::class.java))
             }
         }
     }

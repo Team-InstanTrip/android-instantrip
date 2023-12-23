@@ -43,17 +43,20 @@ dependencies {
     def lifecycle_version = "2.5.1"
     def coroutines_version = "1.6.4"
     def retrofit_version = "2.9.0"
-    implementation 'androidx.core:core-ktx:1.8.0'
+   // implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.5.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.libraries.places:places:2.5.0'
+    //implementation 'com.google.android.libraries.places:places:2.5.0'
     implementation 'androidx.activity:activity-ktx:1.7.2'
     // timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
     // kakao login
     implementation "com.kakao.sdk:v2-user:2.15.0"
+
+    // kakao map
+    implementation 'com.kakao.maps.open:android:2.6.0'
 
     // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
@@ -72,9 +75,13 @@ dependencies {
     //OKHttp
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.6"
 
+    //SlidingUp Panel
+    implementation "com.sothree.slidinguppanel:library:3.4.0"
+
+    //Google Play Service
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
-
-    implementation files('libs/libDaumMapAndroid.jar')
 }

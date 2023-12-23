@@ -1,4 +1,4 @@
-package com.instantrip.presentation.intro
+package com.instantrip.presentation.login
 
 import android.util.Log
 import androidx.lifecycle.LiveData

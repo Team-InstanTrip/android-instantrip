@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        android:id="@+id/message_trans_start"
+        motion:autoTransition="animateToEnd"
+        motion:constraintSetStart="@id/message_start"
+        motion:constraintSetEnd="@+id/message_end"
+        motion:duration="500"
+        motion:motionInterpolator="overshoot">
+        <KeyFrameSet>
+        </KeyFrameSet>
+    </Transition>
+
+    <ConstraintSet android:id="@+id/message_start">
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintWidth_percent="0.7"
+            android:id="@+id/tour_spot_button"
+            android:alpha="0"
+            motion:layout_constraintBottom_toTopOf="@+id/message_list_viewpager"
+            android:layout_marginBottom="16dp" />
+        <Constraint android:id="@+id/message_list_viewpager"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintWidth_percent="1.0"
+            motion:layout_constraintHeight_percent="0.5"
+            motion:layout_constraintTop_toBottomOf="parent" />
+
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/message_end">
+        <Constraint
+            android:layout_height="wrap_content"
+            motion:layout_constraintStart_toStartOf="parent"
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintWidth_percent="0.7"
+            android:id="@+id/tour_spot_button"
+            android:alpha="1"
+            motion:layout_constraintBottom_toTopOf="@+id/message_list_viewpager"
+            android:layout_marginBottom="16dp"
+            />
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:id="@+id/message_list_viewpager"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintWidth_percent="1.0"
+            motion:layout_constraintHeight_percent="0.5"
+            motion:layout_constraintTop_toTopOf="parent" />
+
+    </ConstraintSet>
+</MotionScene>

@@ -20,7 +20,16 @@
                     android:id="@+id/map"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal" />
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/tmp_marker_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="임시마커"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btn_menu"
@@ -53,5 +62,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/nav_main_menu_list"/>
+        app:menu="@menu/nav_main_menu_list"
+        tools:visibility="gone"/>
 </androidx.drawerlayout.widget.DrawerLayout>
